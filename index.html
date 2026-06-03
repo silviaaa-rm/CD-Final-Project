@@ -459,33 +459,33 @@
     </div>
 
     <div>
-      <div class="header-title">HR Intelligence — Predictive Tool</div>
-      <div class="header-sub">Ingresa los datos del empleado para obtener la predicción del modelo</div>
+      <div class="header-title">Predictor de Retención de Empleados</div>
+      <div class="header-sub">Predice la probabilidad de que un empleado abandone la empresa</div>
     </div>
   </div>
 
   <div class="grid">
 
     <div class="panel">
-      <div class="panel-title">Employee profile variables</div>
+      <div class="panel-title">Variables del perfil del empleado</div>
 
       <div class="fields-grid">
         <div class="field">
-          <label>Education</label>
+          <label>Educación</label>
           <select id="education">
-            <option value="0">Bachelors</option>
-            <option value="1">Masters</option>
-            <option value="2">PHD</option>
+            <option value="0">Licenciatura (Bachelors)</option>
+            <option value="1">Maestría (Masters)</option>
+            <option value="2">Doctorado (PHD)</option>
           </select>
         </div>
 
         <div class="field">
-          <label>Joining Year</label>
-          <input type="number" id="joiningYear" value="2016" />
+          <label>Año de ingreso</label>
+          <input type="number" id="joiningYear" value="2012" />
         </div>
 
         <div class="field">
-          <label>City</label>
+          <label>Ciudad</label>
           <select id="city">
             <option value="Bangalore">Bangalore</option>
             <option value="New Delhi">New Delhi</option>
@@ -494,43 +494,43 @@
         </div>
 
         <div class="field">
-          <label>Payment Tier</label>
+          <label>Nivel Salarial</label>
           <select id="paymentTier">
-            <option value="1">1 — Entry</option>
-            <option value="2">2 — Mid</option>
+            <option value="1">1 — Básico</option>
+            <option value="2">2 — Intermedio</option>
             <option value="3" selected>3 — Senior</option>
           </select>
         </div>
 
         <div class="field">
-          <label>Age</label>
+          <label>Edad</label>
           <input type="number" id="age" value="30" />
         </div>
 
         <div class="field">
-          <label>Gender</label>
+          <label>Género</label>
           <select id="gender">
-            <option value="0">Female</option>
-            <option value="1">Male</option>
+            <option value="0">Femenino</option>
+            <option value="1">Masculino</option>
           </select>
         </div>
 
         <div class="field">
-          <label>Ever Benched</label>
+          <label>Sin proyecto asignado</label>
           <select id="everBenched">
             <option value="0">No</option>
-            <option value="1">Yes</option>
+            <option value="1">Si</option>
           </select>
         </div>
 
         <div class="field">
-          <label>Experience (years)</label>
+          <label>Años de experiencia</label>
           <input type="number" id="experience" value="3" />
         </div>
       </div>
 
       <button class="btn-run" id="btnRun" onclick="runPrediction()">
-        <i class="ti ti-cpu"></i> Run Prediction
+        <i class="ti ti-cpu"></i> Predicción
       </button>
 
       <button class="btn-pdf" id="btnPdf" onclick="downloadPDF()">
@@ -539,11 +539,11 @@
     </div>
 
     <div class="panel result-panel">
-      <div class="panel-title">LeaveOrNot prediction</div>
+      <div class="panel-title">Predicción de Permanencia</div>
 
       <div id="resultContent">
         <div class="placeholder">
-          <i class="ti ti-arrow-left"></i> Ingresa los datos y presiona Run Prediction
+          <i class="ti ti-arrow-left"></i> Ingresa los datos y presiona "Predicción"
         </div>
       </div>
     </div>
@@ -652,7 +652,7 @@
 
     return `
       <div class="warning-box">
-        <strong>⚠️ Advertencia</strong>
+        <strong>¡Advertencia!</strong>
         <ul>${items}</ul>
       </div>
     `;
@@ -667,15 +667,15 @@
 
     const leaving = r.prediction === 1;
 
-    const predictionText = leaving ? "Leave" : "Stay";
+    const predictionText = leaving ? "Se va" : "Se queda";
     const predictionClass = leaving ? "prediction-leave" : "prediction-stay";
 
     const dominantPercent = leaving ? probLeave : probStay;
-    const dominantLabel = leaving ? "Leave" : "Stay";
+    const dominantLabel = leaving ? "Se va" : "Se queda";
 
     const riskLabel = leaving
-      ? (probLeave > 70 ? "High Risk" : "Medium Risk")
-      : "Low Risk";
+      ? (probLeave > 70 ? "Alto Riesgo" : "Medio Riesgo")
+      : "Bajo Riesgo";
 
     const gaugeColor = leaving
       ? (probLeave > 70 ? "#ec4899" : "#f59e0b")
@@ -688,8 +688,8 @@
     const recIcons = ['ti-message-circle', 'ti-currency-dollar', 'ti-arrows-exchange'];
 
     const recTitles = leaving
-      ? ['Stay Interview', 'Review Compensation', 'Growth Plan']
-      : ['Periodic Follow-up', 'Maintain Conditions', 'Recognition'];
+      ? ['Entrevista de Permanencia', 'Revisar Compensación', 'Plan de Crecimiento']
+      : ['Seguimiento Periódico', 'Mantener Condiciones', 'Reconocimiento'];
 
     const recsHtml = factors.map((f, i) => `
       <div class="rec-item ${recColors[i] || 'lila'}">
@@ -701,9 +701,9 @@
       </div>
     `).join('');
 
-    const educationText = ["Bachelors", "Masters", "PHD"][lastEmployeeData.Education];
-    const genderText = lastEmployeeData.Gender === 1 ? "Male" : "Female";
-    const benchedText = lastEmployeeData.EverBenched === 1 ? "Yes" : "No";
+    const educationText = ["Licenciatura (Bachelors)", "Maestría (Masters)", "Doctorado (PHD)"][lastEmployeeData.Education];
+    const genderText = lastEmployeeData.Gender === 1 ? "Masculino" : "Femenino";
+    const benchedText = lastEmployeeData.EverBenched === 1 ? "Si" : "No";
 
     const radius = 54;
     const circumference = 2 * Math.PI * radius;
@@ -712,32 +712,32 @@
     document.getElementById('resultContent').innerHTML = `
       <div id="reportExport">
 
-        <div class="result-title-pdf">HR Intelligence — Predictive Report</div>
-        <div class="result-subtitle-pdf">Employee Leave Prediction Summary</div>
+        <div class="result-title-pdf">Reporte Predictivo</div>
+        <div class="result-subtitle-pdf">Resumen de Predicción de Abandono</div>
 
         ${warningsHtml}
 
         <div class="summary-box">
-          <div class="summary-title">Employee Data Summary</div>
+          <div class="summary-title">Resumen de Datos del Empleado</div>
 
           <div class="summary-grid">
-            <div><strong>Education:</strong> ${educationText}</div>
-            <div><strong>Joining Year:</strong> ${lastEmployeeData.JoiningYear}</div>
-            <div><strong>City:</strong> ${lastEmployeeData.City}</div>
-            <div><strong>Payment Tier:</strong> ${lastEmployeeData.PaymentTier}</div>
-            <div><strong>Age:</strong> ${lastEmployeeData.Age}</div>
-            <div><strong>Gender:</strong> ${genderText}</div>
-            <div><strong>Ever Benched:</strong> ${benchedText}</div>
-            <div><strong>Experience:</strong> ${lastEmployeeData.ExperienceInCurrentDomain}</div>
+            <div><strong>Educación:</strong> ${educationText}</div>
+            <div><strong>Año de Ingreso:</strong> ${lastEmployeeData.JoiningYear}</div>
+            <div><strong>Ciudad:</strong> ${lastEmployeeData.City}</div>
+            <div><strong>Nivel Salarial:</strong> ${lastEmployeeData.PaymentTier}</div>
+            <div><strong>Edad:</strong> ${lastEmployeeData.Age}</div>
+            <div><strong>Género:</strong> ${genderText}</div>
+            <div><strong>Sin Proyecto Asignado:</strong> ${benchedText}</div>
+            <div><strong>Experiencia:</strong> ${lastEmployeeData.ExperienceInCurrentDomain}</div>
           </div>
         </div>
 
         <div class="pdf-divider"></div>
 
         <div class="prediction-main">
-          <div class="prediction-title">Main prediction</div>
+          <div class="prediction-title">Predicción Principal</div>
           <span class="prediction-badge ${predictionClass}">${predictionText}</span>
-          <div class="risk-note">Risk level: ${riskLabel}</div>
+          <div class="risk-note">Nivel de riesgo: ${riskLabel}</div>
         </div>
 
         <div class="gauge-container">
@@ -765,7 +765,7 @@
 
         <div class="prob-section">
           <div class="prob-row">
-            <span>Stay</span>
+            <span>Se queda</span>
             <span>${probStay}%</span>
           </div>
 
@@ -774,7 +774,7 @@
           </div>
 
           <div class="prob-row">
-            <span>Leave</span>
+            <span>Se va</span>
             <span>${probLeave}%</span>
           </div>
 
@@ -784,7 +784,7 @@
         </div>
 
         <div>
-          <div class="rec-title">Strategic recommendations</div>
+          <div class="rec-title">Recomendaciones estratégicas</div>
           ${recsHtml}
         </div>
       </div>
@@ -812,26 +812,24 @@
 
   const leaving = lastPredictionResult.prediction === 1;
 
-  const predictionText = leaving ? "Leave" : "Stay";
+  const predictionText = leaving ? "Se va" : "Se queda";
   const dominantPercent = leaving ? probLeave : probStay;
-  const dominantLabel = leaving ? "Leave" : "Stay";
+  const dominantLabel = leaving ? "Se va" : "Se queda";
 
   const riskLabel = leaving
-    ? (probLeave > 70 ? "High Risk" : "Medium Risk")
-    : "Low Risk";
+    ? (probLeave > 70 ? "Alto Riesgo" : "Riesgo Medio")
+    : "Bajo Riesgo";
 
-  const educationText = ["Bachelors", "Masters", "PHD"][lastEmployeeData.Education];
-  const genderText = lastEmployeeData.Gender === 1 ? "Male" : "Female";
-  const benchedText = lastEmployeeData.EverBenched === 1 ? "Yes" : "No";
+  const educationText = ["Licenciatura (Bachelors)", "Maestría (Masters)", "Doctorado (PHD)"][lastEmployeeData.Education];
+  const genderText = lastEmployeeData.Gender === 1 ? "Masculino" : "Femenino";
+  const benchedText = lastEmployeeData.EverBenched === 1 ? "Si" : "No";
 
   const recommendations = lastPredictionResult.main_factors || [];
   const warnings = lastPredictionResult.warnings || [];
 
   let y = 10;
 
-  // ============================================================
-  // Funciones auxiliares
-  // ============================================================
+  // Funciones Auxiliares
 
   function sectionTitle(text, posY) {
     pdf.setFont("helvetica", "bold");
@@ -858,19 +856,19 @@
     const barWidth = contentWidth;
     const barHeight = 4;
 
-    // fondo
+    // Fondo
     pdf.setFillColor(243, 232, 255);
     pdf.roundedRect(margin, barY, barWidth, barHeight, 2, 2, "F");
 
-    // progreso
+    // Progreso
     pdf.setFillColor(...color);
     pdf.roundedRect(margin, barY, barWidth * (value / 100), barHeight, 2, 2, "F");
   }
 
   function recommendationTitle(index, leaving) {
-    if (index === 0) return leaving ? "Stay Interview" : "Periodic Follow-up";
-    if (index === 1) return leaving ? "Review Compensation" : "Maintain Conditions";
-    return leaving ? "Growth Plan" : "Recognition";
+    if (index === 0) return leaving ? "Entrevista de Permanencia" : "Seguimiento Periódico";
+    if (index === 1) return leaving ? "Revisar Compensación" : "Mantener Condiciones";
+    return leaving ? "Plan de Crecimiento" : "Reconocimiento";
   }
 
   function recommendationColors(index) {
@@ -892,34 +890,31 @@
     };
   }
 
-  // ============================================================
-  // ENCABEZADO
-  // ============================================================
+
+  // Encabezado
 
   drawRoundedBox(margin, y, contentWidth, 20, [243, 232, 255], [216, 180, 254]);
 
   pdf.setFont("helvetica", "bold");
   pdf.setFontSize(15);
   pdf.setTextColor(88, 28, 135);
-  pdf.text("HR Intelligence — Predictive Report", margin + 8, y + 8);
+  pdf.text("Reporte Predictivo", margin + 8, y + 8);
 
   pdf.setFont("helvetica", "normal");
   pdf.setFontSize(9);
   pdf.setTextColor(126, 34, 206);
-  pdf.text("Employee Leave Prediction Summary", margin + 8, y + 14);
+  pdf.text("Resumen de Predicción de Abandono del Empleado", margin + 8, y + 14);
 
   y += 28;
 
-  // ============================================================
-  // SUMMARY
-  // ============================================================
+// Resumen
 
   drawRoundedBox(margin, y, contentWidth, 40, [250, 245, 255], [233, 213, 255]);
 
   pdf.setFont("helvetica", "bold");
   pdf.setFontSize(11);
   pdf.setTextColor(126, 34, 206);
-  pdf.text("Employee Data Summary", margin + 6, y + 8);
+  pdf.text("Resumen de Datos del Empleado", margin + 6, y + 8);
 
   pdf.setFont("helvetica", "normal");
   pdf.setFontSize(9);
@@ -928,23 +923,21 @@
   const leftX = margin + 6;
   const rightX = margin + 105;
 
-  pdf.text(`Education: ${educationText}`, leftX, y + 16);
-  pdf.text(`Joining Year: ${lastEmployeeData.JoiningYear}`, rightX, y + 16);
+  pdf.text(`Educación: ${educationText}`, leftX, y + 16);
+  pdf.text(`Año de Ingreso: ${lastEmployeeData.JoiningYear}`, rightX, y + 16);
 
-  pdf.text(`City: ${lastEmployeeData.City}`, leftX, y + 23);
-  pdf.text(`Payment Tier: ${lastEmployeeData.PaymentTier}`, rightX, y + 23);
+  pdf.text(`Ciudad: ${lastEmployeeData.City}`, leftX, y + 23);
+  pdf.text(`Nivel Salarial: ${lastEmployeeData.PaymentTier}`, rightX, y + 23);
 
-  pdf.text(`Age: ${lastEmployeeData.Age}`, leftX, y + 30);
-  pdf.text(`Gender: ${genderText}`, rightX, y + 30);
+  pdf.text(`Edad: ${lastEmployeeData.Age}`, leftX, y + 30);
+  pdf.text(`Género: ${genderText}`, rightX, y + 30);
 
-  pdf.text(`Ever Benched: ${benchedText}`, leftX, y + 37);
-  pdf.text(`Experience: ${lastEmployeeData.ExperienceInCurrentDomain}`, rightX, y + 37);
+  pdf.text(`Sin Proyecto Asignado: ${benchedText}`, leftX, y + 37);
+  pdf.text(`Experiencia: ${lastEmployeeData.ExperienceInCurrentDomain}`, rightX, y + 37);
 
   y += 50;
 
-  // ============================================================
-  // WARNINGS
-  // ============================================================
+// Advertencias
 
   if (warnings.length > 0) {
     let warningHeight = 14;
@@ -974,11 +967,9 @@
     y += warningHeight + 8;
   }
 
-  // ============================================================
-  // MAIN PREDICTION
-  // ============================================================
+ // Predicción Principal
 
-  sectionTitle("Main Prediction", y);
+  sectionTitle("Predicción Principal", y);
   y += 6;
 
   // Caja izquierda: predicción
@@ -996,7 +987,7 @@
   pdf.setFont("helvetica", "bold");
   pdf.setFontSize(10);
   pdf.setTextColor(107, 114, 128);
-  pdf.text("Prediction", leftBoxX + 6, leftBoxY + 8);
+  pdf.text("Predicción", leftBoxX + 6, leftBoxY + 8);
 
   pdf.setFont("helvetica", "bold");
   pdf.setFontSize(16);
@@ -1006,7 +997,7 @@
   pdf.setFont("helvetica", "normal");
   pdf.setFontSize(9);
   pdf.setTextColor(75, 85, 99);
-  pdf.text(`Risk level: ${riskLabel}`, leftBoxX + 40, leftBoxY + 18);
+  pdf.text(`Nivel de Riesgo: ${riskLabel}`, leftBoxX + 40, leftBoxY + 18);
 
   // Caja derecha: porcentaje dominante
   const rightBoxX = margin + 95;
@@ -1019,7 +1010,7 @@
   pdf.setFont("helvetica", "bold");
   pdf.setFontSize(10);
   pdf.setTextColor(107, 114, 128);
-  pdf.text("Highest probability", rightBoxX + 6, rightBoxY + 8);
+  pdf.text("Mayor Probabilidad", rightBoxX + 6, rightBoxY + 8);
 
   pdf.setFont("helvetica", "bold");
   pdf.setFontSize(18);
@@ -1033,24 +1024,20 @@
 
   y += 36;
 
-  // ============================================================
-  // PROBABILITIES
-  // ============================================================
+  // Probabilidades
 
-  sectionTitle("Probability Breakdown", y);
+  sectionTitle("Desglose de Probabilidades", y);
   y += 8;
 
-  drawProgressBar("Stay", probStay, [16, 185, 129], y);
+  drawProgressBar("Se queda", probStay, [16, 185, 129], y);
   y += 16;
 
-  drawProgressBar("Leave", probLeave, [236, 72, 153], y);
+  drawProgressBar("Se va", probLeave, [236, 72, 153], y);
   y += 18;
 
-  // ============================================================
-  // RECOMMENDATIONS
-  // ============================================================
+  // Recomendaciones
 
-  sectionTitle("Strategic Recommendations", y);
+  sectionTitle("Recomendaciones Estratégicas", y);
   y += 8;
 
   recommendations.forEach((rec, index) => {
@@ -1063,7 +1050,7 @@
     if (y + boxHeight > 280) {
       pdf.addPage();
       y = 15;
-      sectionTitle("Strategic Recommendations", y);
+      sectionTitle("Recomendaciones Estratégicas", y);
       y += 8;
     }
 
@@ -1082,16 +1069,14 @@
     y += boxHeight + 6;
   });
 
-  // ============================================================
-  // FOOTER
-  // ============================================================
+  // Pie de página
 
   pdf.setFont("helvetica", "normal");
   pdf.setFontSize(8);
   pdf.setTextColor(156, 163, 175);
-  pdf.text(`Generated on: ${new Date().toLocaleString()}`, margin, 288);
+  pdf.text(`Generado en: ${new Date().toLocaleString()}`, margin, 288);
 
-  pdf.save("employee_prediction_report.pdf");
+  pdf.save("Reporte_Empleado.pdf");
 }
 </script>
 </body>
