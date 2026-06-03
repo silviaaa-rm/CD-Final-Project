@@ -666,7 +666,7 @@
 
   function resetButton(btn) {
     btn.disabled = false;
-    btn.innerHTML = '<i class="ti ti-cpu"></i> Run Prediction';
+    btn.innerHTML = '<i class="ti ti-cpu"></i> Predicción';
   }
 
   function showError(message) {
@@ -690,137 +690,143 @@
   }
 
   function renderResult(r) {
-    lastPredictionResult = r;
-    document.getElementById("btnPdf").style.display = "flex";
+  lastPredictionResult = r;
+  document.getElementById("btnPdf").style.display = "flex";
 
-    const probLeave = Math.round(r.prob_leave * 100);
-    const probStay = Math.round(r.prob_stay * 100);
+  // Probabilidades numéricas, sin redondear a entero
+  const probLeaveNum = r.prob_leave * 100;
+  const probStayNum = r.prob_stay * 100;
 
-    const leaving = r.prediction === 1;
+  // Texto con 2 decimales
+  const probLeaveText = probLeaveNum.toFixed(2);
+  const probStayText = probStayNum.toFixed(2);
 
-    const predictionText = leaving ? "Se va" : "Se queda";
-    const predictionClass = leaving ? "prediction-leave" : "prediction-stay";
+  const leaving = r.prediction === 1;
 
-    const dominantPercent = leaving ? probLeave : probStay;
-    const dominantLabel = leaving ? "Se va" : "Se queda";
+  const predictionText = leaving ? "Se va" : "Se queda";
+  const predictionClass = leaving ? "prediction-leave" : "prediction-stay";
 
-    const riskLabel = leaving
-      ? (probLeave > 70 ? "Alto Riesgo" : "Medio Riesgo")
-      : "Bajo Riesgo";
+  const dominantPercentNum = leaving ? probLeaveNum : probStayNum;
+  const dominantPercentText = dominantPercentNum.toFixed(2);
+  const dominantLabel = leaving ? "Se va" : "Se queda";
 
-    const gaugeColor = leaving
-      ? (probLeave > 70 ? "#ec4899" : "#f59e0b")
-      : "#10b981";
+  const riskLabel = leaving
+    ? (probLeaveNum > 70 ? "Alto Riesgo" : "Riesgo Medio")
+    : "Bajo Riesgo";
 
-    const factors = r.main_factors || [];
-    const warningsHtml = buildWarningsHtml(r.warnings);
+  const gaugeColor = leaving
+    ? (probLeaveNum > 70 ? "#ec4899" : "#f59e0b")
+    : "#10b981";
 
-    const recColors = ['pink', 'green', 'lila'];
-    const recIcons = ['ti-message-circle', 'ti-currency-dollar', 'ti-arrows-exchange'];
+  const factors = r.main_factors || [];
+  const warningsHtml = buildWarningsHtml(r.warnings);
 
-    const recTitles = leaving
-      ? ['Entrevista de Permanencia', 'Revisar Compensación', 'Plan de Crecimiento']
-      : ['Seguimiento Periódico', 'Mantener Condiciones', 'Reconocimiento'];
+  const recColors = ['pink', 'green', 'lila'];
+  const recIcons = ['ti-message-circle', 'ti-currency-dollar', 'ti-arrows-exchange'];
 
-    const recsHtml = factors.map((f, i) => `
-      <div class="rec-item ${recColors[i] || 'lila'}">
-        <i class="ti ${recIcons[i] || 'ti-info-circle'}"></i>
-        <div>
-          <strong>${recTitles[i] || 'Recommendation'}</strong>
-          <span>${f}</span>
+  const recTitles = leaving
+    ? ['Entrevista de Permanencia', 'Revisar Compensación', 'Plan de Crecimiento']
+    : ['Seguimiento Periódico', 'Mantener Condiciones', 'Reconocimiento'];
+
+  const recsHtml = factors.map((f, i) => `
+    <div class="rec-item ${recColors[i] || 'lila'}">
+      <i class="ti ${recIcons[i] || 'ti-info-circle'}"></i>
+      <div>
+        <strong>${recTitles[i] || 'Recomendación'}</strong>
+        <span>${f}</span>
+      </div>
+    </div>
+  `).join('');
+
+  const educationText = ["Licenciatura (Bachelors)", "Maestría (Masters)", "Doctorado (PHD)"][lastEmployeeData.Education];
+  const genderText = lastEmployeeData.Gender === 1 ? "Masculino" : "Femenino";
+  const benchedText = lastEmployeeData.EverBenched === 1 ? "Sí" : "No";
+
+  const radius = 54;
+  const circumference = 2 * Math.PI * radius;
+  const strokeOffset = circumference * (1 - dominantPercentNum / 100);
+
+  document.getElementById('resultContent').innerHTML = `
+    <div id="reportExport">
+
+      <div class="result-title-pdf">Reporte Predictivo</div>
+      <div class="result-subtitle-pdf">Resumen de Predicción de Abandono</div>
+
+      ${warningsHtml}
+
+      <div class="summary-box">
+        <div class="summary-title">Resumen de Datos del Empleado</div>
+
+        <div class="summary-grid">
+          <div><strong>Educación:</strong> ${educationText}</div>
+          <div><strong>Año de Ingreso:</strong> ${lastEmployeeData.JoiningYear}</div>
+          <div><strong>Ciudad:</strong> ${lastEmployeeData.City}</div>
+          <div><strong>Nivel Salarial:</strong> ${lastEmployeeData.PaymentTier}</div>
+          <div><strong>Edad:</strong> ${lastEmployeeData.Age}</div>
+          <div><strong>Género:</strong> ${genderText}</div>
+          <div><strong>¿Alguna vez sin proyecto?</strong> ${benchedText}</div>
+          <div><strong>Experiencia:</strong> ${lastEmployeeData.ExperienceInCurrentDomain}</div>
         </div>
       </div>
-    `).join('');
 
-    const educationText = ["Licenciatura (Bachelors)", "Maestría (Masters)", "Doctorado (PHD)"][lastEmployeeData.Education];
-    const genderText = lastEmployeeData.Gender === 1 ? "Masculino" : "Femenino";
-    const benchedText = lastEmployeeData.EverBenched === 1 ? "Si" : "No";
+      <div class="pdf-divider"></div>
 
-    const radius = 54;
-    const circumference = 2 * Math.PI * radius;
-    const strokeOffset = circumference * (1 - dominantPercent / 100);
+      <div class="prediction-main">
+        <div class="prediction-title">Predicción Principal</div>
+        <span class="prediction-badge ${predictionClass}">${predictionText}</span>
+        <div class="risk-note">Nivel de riesgo: ${riskLabel}</div>
+      </div>
 
-    document.getElementById('resultContent').innerHTML = `
-      <div id="reportExport">
+      <div class="gauge-container">
+        <div class="donut-wrap">
+          <svg class="donut-svg" width="160" height="160" viewBox="0 0 160 160">
+            <circle class="donut-bg" cx="80" cy="80" r="${radius}"></circle>
 
-        <div class="result-title-pdf">Reporte Predictivo</div>
-        <div class="result-subtitle-pdf">Resumen de Predicción de Abandono</div>
+            <circle
+              class="donut-progress"
+              cx="80"
+              cy="80"
+              r="${radius}"
+              stroke="${gaugeColor}"
+              stroke-dasharray="${circumference}"
+              stroke-dashoffset="${strokeOffset}">
+            </circle>
 
-        ${warningsHtml}
-
-        <div class="summary-box">
-          <div class="summary-title">Resumen de Datos del Empleado</div>
-
-          <div class="summary-grid">
-            <div><strong>Educación:</strong> ${educationText}</div>
-            <div><strong>Año de Ingreso:</strong> ${lastEmployeeData.JoiningYear}</div>
-            <div><strong>Ciudad:</strong> ${lastEmployeeData.City}</div>
-            <div><strong>Nivel Salarial:</strong> ${lastEmployeeData.PaymentTier}</div>
-            <div><strong>Edad:</strong> ${lastEmployeeData.Age}</div>
-            <div><strong>Género:</strong> ${genderText}</div>
-            <div><strong>¿Alguna vez sin proyecto?</strong> ${benchedText}</div>
-            <div><strong>Experiencia:</strong> ${lastEmployeeData.ExperienceInCurrentDomain}</div>
-          </div>
+            <text x="80" y="76" text-anchor="middle" class="donut-center">${dominantPercentText}%</text>
+            <text x="80" y="102" text-anchor="middle" class="donut-sub">${dominantLabel}</text>
+          </svg>
         </div>
 
-        <div class="pdf-divider"></div>
+        <p class="prob-label">Probabilidad más alta</p>
+      </div>
 
-        <div class="prediction-main">
-          <div class="prediction-title">Predicción Principal</div>
-          <span class="prediction-badge ${predictionClass}">${predictionText}</span>
-          <div class="risk-note">Nivel de riesgo: ${riskLabel}</div>
+      <div class="prob-section">
+        <div class="prob-row">
+          <span>Se queda</span>
+          <span>${probStayText}%</span>
         </div>
 
-        <div class="gauge-container">
-          <div class="donut-wrap">
-            <svg class="donut-svg" width="160" height="160" viewBox="0 0 160 160">
-              <circle class="donut-bg" cx="80" cy="80" r="${radius}"></circle>
-
-              <circle
-                class="donut-progress"
-                cx="80"
-                cy="80"
-                r="${radius}"
-                stroke="${gaugeColor}"
-                stroke-dasharray="${circumference}"
-                stroke-dashoffset="${strokeOffset}">
-              </circle>
-
-              <text x="80" y="76" text-anchor="middle" class="donut-center">${dominantPercent}%</text>
-              <text x="80" y="102" text-anchor="middle" class="donut-sub">${dominantLabel}</text>
-            </svg>
-          </div>
-
-          <p class="prob-label">Probabilidad más alta</p>
+        <div class="prob-bar-wrap">
+          <div class="prob-bar" style="width:${probStayNum}%; background:#10b981;"></div>
         </div>
 
-        <div class="prob-section">
-          <div class="prob-row">
-            <span>Se queda</span>
-            <span>${probStay}%</span>
-          </div>
-
-          <div class="prob-bar-wrap">
-            <div class="prob-bar" style="width:${probStay}%; background:#10b981;"></div>
-          </div>
-
-          <div class="prob-row">
-            <span>Se va</span>
-            <span>${probLeave}%</span>
-          </div>
-
-          <div class="prob-bar-wrap">
-            <div class="prob-bar" style="width:${probLeave}%; background:#ec4899;"></div>
-          </div>
+        <div class="prob-row">
+          <span>Se va</span>
+          <span>${probLeaveText}%</span>
         </div>
 
-        <div>
-          <div class="rec-title">Recomendaciones estratégicas</div>
-          ${recsHtml}
+        <div class="prob-bar-wrap">
+          <div class="prob-bar" style="width:${probLeaveNum}%; background:#ec4899;"></div>
         </div>
       </div>
-    `;
-  }
+
+      <div>
+        <div class="rec-title">Recomendaciones estratégicas</div>
+        ${recsHtml}
+      </div>
+    </div>
+  `;
+}
 
   async function downloadPDF() {
   const { jsPDF } = window.jspdf;
@@ -838,18 +844,22 @@
   const margin = 10;
   const contentWidth = pageWidth - margin * 2;
 
-  const probLeave = Math.round(lastPredictionResult.prob_leave * 100);
-  const probStay = Math.round(lastPredictionResult.prob_stay * 100);
+  const probLeaveNum = lastPredictionResult.prob_leave * 100;
+  const probStayNum = lastPredictionResult.prob_stay * 100;
+
+  const probLeaveText = probLeaveNum.toFixed(2);
+  const probStayText = probStayNum.toFixed(2);
 
   const leaving = lastPredictionResult.prediction === 1;
 
   const predictionText = leaving ? "Se va" : "Se queda";
-  const dominantPercent = leaving ? probLeave : probStay;
+  const dominantPercentNum = leaving ? probLeaveNum : probStayNum;
+  const dominantPercentText = dominantPercentNum.toFixed(2);
   const dominantLabel = leaving ? "Se va" : "Se queda";
 
   const riskLabel = leaving
-    ? (probLeave > 70 ? "Alto Riesgo" : "Riesgo Medio")
-    : "Bajo Riesgo";
+  ? (probLeaveNum > 70 ? "Alto Riesgo" : "Riesgo Medio")
+  : "Bajo Riesgo";
 
   const educationText = ["Licenciatura (Bachelors)", "Maestría (Masters)", "Doctorado (PHD)"][lastEmployeeData.Education];
   const genderText = lastEmployeeData.Gender === 1 ? "Masculino" : "Femenino";
@@ -881,7 +891,7 @@
     pdf.setTextColor(75, 85, 99);
 
     pdf.text(label, margin, posY);
-    pdf.text(`${value}%`, pageWidth - margin, posY, { align: "right" });
+    pdf.text(`${value.toFixed(2)}%`, pageWidth - margin, posY, { align: "right" });
 
     const barY = posY + 3;
     const barWidth = contentWidth;
@@ -1046,7 +1056,7 @@
   pdf.setFont("helvetica", "bold");
   pdf.setFontSize(18);
   pdf.setTextColor(17, 24, 39);
-  pdf.text(`${dominantPercent}%`, rightBoxX + 6, rightBoxY + 18);
+  pdf.text(`${dominantPercentText}%`, rightBoxX + 6, rightBoxY + 18);
 
   pdf.setFont("helvetica", "normal");
   pdf.setFontSize(9);
@@ -1060,10 +1070,10 @@
   sectionTitle("Desglose de Probabilidades", y);
   y += 8;
 
-  drawProgressBar("Se queda", probStay, [16, 185, 129], y);
+  drawProgressBar("Se queda", probStayNum, [16, 185, 129], y);
   y += 16;
 
-  drawProgressBar("Se va", probLeave, [236, 72, 153], y);
+  drawProgressBar("Se va", probLeaveNum, [236, 72, 153], y);
   y += 18;
 
   // Recomendaciones
