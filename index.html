@@ -447,6 +447,33 @@
       font-size: 12px;
       color: #6b7280;
     }
+
+    .btn-clear {
+        width: 100%;
+        margin-top: 10px;
+        padding: 11px;
+        background: #f3e8ff;
+        border: 1px solid #d8b4fe;
+        border-radius: 10px;
+        color: #581c87;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: background 0.15s, transform 0.1s;
+    }
+
+    .btn-clear:hover {
+        background: #e9d5ff;
+    }
+
+    .btn-clear:active {
+        transform: scale(0.98);
+    }
+
   </style>
 </head>
 
@@ -496,9 +523,9 @@
         <div class="field">
           <label>Nivel Salarial</label>
           <select id="paymentTier">
-            <option value="1">1 — Básico</option>
-            <option value="2">2 — Intermedio</option>
-            <option value="3" selected>3 — Senior</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3" selected>3</option>
           </select>
         </div>
 
@@ -516,7 +543,7 @@
         </div>
 
         <div class="field">
-          <label>Sin proyecto asignado</label>
+          <label>¿Alguna vez sin proyecto?</label>
           <select id="everBenched">
             <option value="0">No</option>
             <option value="1">Si</option>
@@ -532,6 +559,10 @@
       <button class="btn-run" id="btnRun" onclick="runPrediction()">
         <i class="ti ti-cpu"></i> Predicción
       </button>
+
+      <button class="btn-clear" id="btnClear" onclick="clearForm()">
+        <i class="ti ti-refresh"></i> Limpiar
+        </button>
 
       <button class="btn-pdf" id="btnPdf" onclick="downloadPDF()">
         <i class="ti ti-file-download"></i> Descargar PDF
@@ -727,7 +758,7 @@
             <div><strong>Nivel Salarial:</strong> ${lastEmployeeData.PaymentTier}</div>
             <div><strong>Edad:</strong> ${lastEmployeeData.Age}</div>
             <div><strong>Género:</strong> ${genderText}</div>
-            <div><strong>Sin Proyecto Asignado:</strong> ${benchedText}</div>
+            <div><strong>¿Alguna vez sin proyecto?</strong> ${benchedText}</div>
             <div><strong>Experiencia:</strong> ${lastEmployeeData.ExperienceInCurrentDomain}</div>
           </div>
         </div>
@@ -932,7 +963,7 @@
   pdf.text(`Edad: ${lastEmployeeData.Age}`, leftX, y + 30);
   pdf.text(`Género: ${genderText}`, rightX, y + 30);
 
-  pdf.text(`Sin Proyecto Asignado: ${benchedText}`, leftX, y + 37);
+  pdf.text(`¿Alguna vez sin proyecto? ${benchedText}`, leftX, y + 37);
   pdf.text(`Experiencia: ${lastEmployeeData.ExperienceInCurrentDomain}`, rightX, y + 37);
 
   y += 50;
@@ -1077,6 +1108,34 @@
   pdf.text(`Generado en: ${new Date().toLocaleString()}`, margin, 288);
 
   pdf.save("Reporte_Empleado.pdf");
+}
+
+function clearForm() {
+  // Regresar selects a valores iniciales
+  document.getElementById('education').value = "0";
+  document.getElementById('city').value = "Bangalore";
+  document.getElementById('paymentTier').value = "3";
+  document.getElementById('gender').value = "0";
+  document.getElementById('everBenched').value = "0";
+
+  // Regresar inputs numéricos a valores iniciales
+  document.getElementById('joiningYear').value = "2016";
+  document.getElementById('age').value = "30";
+  document.getElementById('experience').value = "3";
+
+  // Limpiar resultado
+  document.getElementById('resultContent').innerHTML = `
+    <div class="placeholder">
+      <i class="ti ti-arrow-left"></i> Ingresa los datos y presiona Predicción
+    </div>
+  `;
+
+  // Ocultar botón PDF
+  document.getElementById("btnPdf").style.display = "none";
+
+  // Limpiar variables guardadas
+  lastEmployeeData = null;
+  lastPredictionResult = null;
 }
 </script>
 </body>
