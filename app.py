@@ -65,7 +65,7 @@ def predict():
         education = int(data["Education"]) # Bachelors = 0; Masters = 1; PHD = 2
         payment_tier = int(data["PaymentTier"]) # 1, 2 o 3
         gender = int(data["Gender"]) # Female = 0; Male = 1
-        ever_benched = int(data["EeverBenched"]) # No = 0; Yes = 1
+        ever_benched = int(data["EverBenched"]) # No = 0; Yes = 1
 
         # Variables escritas
         joining_year = int(data["JoiningYear"])
@@ -200,6 +200,6 @@ def predict():
         return jsonify({"error":str(e)}), 500
     
     # Ejecutar servidor
-    if __name__ == "__main__":
-        app.run(debug=True)
+if __name__ == "__main__":
+    app.run(debug=True)
     
